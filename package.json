@@ -1,0 +1,54 @@
+{
+  "name": "mds-log-pump",
+  "version": "0.0.1",
+  "description": "a out-of-process log shipping utility",
+  "main": "cli.js",
+  "bin": {
+    "mds-log-pump": "./cli.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "rimraf ./dist",
+    "test": "NODE_ENV=test jest",
+    "test-cov": "NODE_ENV=test jest --coverage",
+    "test-watch": "NODE_ENV=test jest --watch",
+    "test-watch-cov": "NODE_ENV=test jest --watch --coverage",
+    "lint": "eslint 'src/**'",
+    "pretty-check": "prettier -c ./src",
+    "pretty": "prettier -w ./src",
+    "format": "npm run pretty",
+    "prebuild": "npm run clean",
+    "prepublish:setup": "npm run clean && npm run build && node dist/setup-package.js && rimraf ./dist/setup-package.js ./dist/setup-package.d.ts",
+    "publish:setup": "echo 'ready to publish from dist folder!'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MadDonkeySoftware/mdsLogPump.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MadDonkeySoftware/mdsLogPump/issues"
+  },
+  "homepage": "https://github.com/MadDonkeySoftware/mdsLogPump#readme",
+  "devDependencies": {
+    "@types/minimist": "^1.2.2",
+    "@typescript-eslint/eslint-plugin": "^5.38.0",
+    "eslint": "^8.24.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-jest": "^27.0.4",
+    "eslint-plugin-prettier": "^4.2.1",
+    "jest": "^29.0.3",
+    "prettier": "^2.7.1",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^29.0.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.3"
+  },
+  "dependencies": {
+    "joycon": "^3.1.1",
+    "json-easy-strip": "^1.0.6",
+    "minimist": "^1.2.6",
+    "secure-json-parse": "^2.5.0"
+  }
+}
