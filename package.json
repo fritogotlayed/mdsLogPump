@@ -1,8 +1,9 @@
 {
   "name": "mds-log-pump",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "a out-of-process log shipping utility",
-  "main": "cli.js",
+  "main": "dist/cli.js",
+  "types": "dist/cli.d.ts",
   "bin": {
     "mds-log-pump": "./cli.js"
   },

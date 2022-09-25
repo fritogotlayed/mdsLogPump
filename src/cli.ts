@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 // import minimist from 'minimist';
 import { parse } from 'secure-json-parse';
 import JoyCon from 'joycon';
