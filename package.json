@@ -1,6 +1,6 @@
 {
   "name": "mds-log-pump",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "a out-of-process log shipping utility",
   "main": "dist/cli.js",
   "types": "dist/cli.d.ts",
@@ -33,6 +33,8 @@
   },
   "homepage": "https://github.com/MadDonkeySoftware/mdsLogPump#readme",
   "devDependencies": {
+    "@jest/reporters": "^29.0.3",
+    "@types/jest": "^29.0.3",
     "@types/minimist": "^1.2.2",
     "@typescript-eslint/eslint-plugin": "^5.38.0",
     "eslint": "^8.24.0",

@@ -22,7 +22,7 @@ const loadConfigs = new JoyCon({
   parseJSON: secureParseJSON,
   files: VALID_CONFIG_FILES,
   stopDir: dirname(process.cwd()),
-})
+});
 
 // TODO: Allow config via CLI flags
 // const flags = minimist(process.argv.slice(2), {
@@ -49,14 +49,14 @@ const configData = configMeta.data;
 const normalizer = new PinoNormalizer();
 process.stdin.on('data', (data) => {
   const payload = normalizer.normalize(data.toString());
-  // const payload = JSON.parse(data.toString());
-  write(
-    {
-      // loggingEndpoint: 'http://localhost:6002',
-      loggingEndpoint: `${configData.mode}://${configData.host}:${configData.port}`,
-    },
-    payload,
-  );
+  payload.forEach((message) => {
+    write(
+      {
+        loggingEndpoint: `${configData.mode}://${configData.host}:${configData.port}`,
+      },
+      message,
+    );
+  });
 });
 
 // --pump logstashHttp --mode http --host localhost --port 6002
