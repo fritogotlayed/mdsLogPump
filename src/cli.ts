@@ -50,6 +50,9 @@ const normalizer = new PinoNormalizer();
 process.stdin.on('data', (data) => {
   const payload = normalizer.normalize(data.toString());
   payload.forEach((message) => {
+    if (configData.echo) {
+      console.log(JSON.stringify(message));
+    }
     write(
       {
         loggingEndpoint: `${configData.mode}://${configData.host}:${configData.port}`,
