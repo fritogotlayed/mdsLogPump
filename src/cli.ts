@@ -5,7 +5,7 @@ import { parse } from 'secure-json-parse';
 import JoyCon from 'joycon';
 import { dirname } from 'path';
 import { write } from './pumps/logstash-http';
-import { PinoNormalizer } from './normalizers';
+import { getNormalizer } from './normalizers';
 
 // https://www.npmjs.com/package/joycon
 const VALID_CONFIG_FILES = [
@@ -46,7 +46,7 @@ const loadConfigs = new JoyCon({
 const configMeta = loadConfigs.loadSync();
 const configData = configMeta.data;
 
-const normalizer = new PinoNormalizer();
+const normalizer = getNormalizer(configData.source);
 process.stdin.on('data', (data) => {
   const payload = normalizer.normalize(data.toString());
   payload.forEach((message) => {
