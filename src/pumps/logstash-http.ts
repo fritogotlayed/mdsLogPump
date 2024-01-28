@@ -1,11 +1,6 @@
 // https://github.com/MadDonkeySoftware/mdsCloudNotificationService/blob/master/src/bunyan-logstash-http.js
-// const util = require('util');
-// const url = require('url');
-import { inspect } from 'util';
-import { parse } from 'url';
-import { request as httpRequest } from 'http';
-import { request as httpsRequest } from 'https';
 import { LogPumpMessage, LogPumpMetadata } from '../types';
+import { postMessage } from '../utils/post-message';
 
 let retryHandle: NodeJS.Timer | undefined;
 const retryMessages: unknown[] = [];
@@ -24,52 +19,16 @@ export interface LogstashHttpConfiguration {
   metadata?: Record<string, unknown>;
 }
 
-interface WebResponseData {
-  statusCode: number;
-}
-
-const postMessage = function postMessage(
-  settings: LogstashHttpConfiguration,
-  message: Record<string, unknown> | undefined | null,
-) {
-  if (!message) return Promise.resolve();
-
-  const data = JSON.stringify(message);
-  const parsedUrl = parse(settings.loggingEndpoint);
-  const options = {
-    hostname: parsedUrl.hostname,
-    port: parsedUrl.port,
-    path: parsedUrl.path,
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Content-Length': data.length,
-    },
-  };
-
-  const request = parsedUrl.protocol === 'https:' ? httpsRequest : httpRequest;
-
-  return new Promise((resolve, reject) => {
-    const req = request(options, (res) => {
-      const resp: WebResponseData = {
-        statusCode: res.statusCode,
-      };
-      res.socket.destroy();
-      resolve(resp);
-    });
-    req.on('error', (err: NodeJS.ErrnoException) => {
-      if (err.code !== 'ECONNREFUSED') {
-        const msg = inspect(err, false, null, true);
-        process.stderr.write(`${msg}\n`);
-      }
-      reject(err);
-    });
-    req.write(data);
-    req.end();
-  }).then((resp: WebResponseData) => {
-    const resolve = resp.statusCode < 400;
-    return resolve ? Promise.resolve() : Promise.reject();
-  });
+const computeTimestamp = (input?: number | string | null) => {
+  if (input) {
+    if (typeof input === 'string') {
+      return input;
+    }
+    if (typeof input === 'number') {
+      return new Date(input).toISOString();
+    }
+  }
+  return new Date().toISOString();
 };
 
 const log = (
@@ -82,10 +41,7 @@ const log = (
     ...settings.metadata,
     ...metadata,
   };
-  const timestamp =
-    typeof metadata.time === 'number'
-      ? new Date(metadata.time).toISOString()
-      : metadata.time;
+  const timestamp = computeTimestamp(metadata.time);
   const packagedMessage = {
     '@timestamp': timestamp,
     logLevel: level,
